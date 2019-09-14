@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body> 
+    <div class="login-form">  
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            <h2 class="text-center">Create an Account</h2>
+            <div class="form-group">
+                {% if form.email.errors %}
+                    {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.email(class="form-control", placeholder="Email") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {% if form.username.errors %}
+                    {{ form.username(class="form-control is-invalid", placeholder="Username") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.username(class="form-control", placeholder="Username") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {% if form.password.errors %}
+                        {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="form-control ", placeholder="Password") }}
+                    {% endif %}
+            </div>
+            <div class="form-group">
+                {% if form.confirm_pwd.errors %}
+                        {{ form.confirm_pwd(class="form-control is-invalid", placeholder="Confirm Password") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_pwd.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.confirm_pwd(class="form-control ", placeholder="Confirm Password") }}
+                    {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.create(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+        <p class="text-center"><a href="{{ url_for('login') }}">Log In</a></p>
+    </div>
+</body>
+
+</html>

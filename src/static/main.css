@@ -24,3 +24,8 @@
     font-size: 15px;
     font-weight: bold;
 }
+
+.invalid-feedback span{
+    color: red;
+    font-size: 10px;   
+}
