@@ -13,7 +13,7 @@ def login():
         account = Account.query.filter_by(username=form.username.data).first()
         if account and encrypt.check_password_hash(account.password, form.password.data):
             login_user(account, remember=form.remember_me.data)
-            redirect(url_for('logged_in'))
+            return redirect(url_for('logged_in'))
         else:
             flash('Invalid username or password', 'danger')
     return render_template('index.html', form=form)
