@@ -38,6 +38,8 @@ Google chrome is recommended.
 Password is hashed before being stored into the database using the bcrypt module. Bcrypt provides a great hashing algorithm as it always hashes every password with a salt do make cracking a user's password significantly harder and eliminating the possibility of using a hashing table to figure out a user's password.
 
 # Prevention of timing attacks
+Google Recaptcha v2 is implemented on all forms to ensure automated requests will work. This is also implemented to avoid automated brute force attacks.
+
 # Logging
 # CSRF prevention
 The Flask-WTF extension uses the value of the SECRET_KEY to provide protection for FlaskForms from CSRF attacts. The argument ```{{ form.hidden_tag() }}``` has been placed in each form in the HTML file with the help of Jinja. This argument generates a hidden field that includes a token to help protect the form from CSRF attacks.
@@ -50,4 +52,5 @@ If the user wishes to reset their password or have forgotten their password, the
 
 # Cookie
 # HTTPS
+
 # Known password check

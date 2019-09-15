@@ -14,6 +14,8 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'dummy.zendeskchallenge@gmail.com'
 app.config['MAIL_PASSWORD'] = 'securitychallenge'
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6LedfbgUAAAAAGzzyrw0Gvya8Rm6_icnQmU1x-9D'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6LedfbgUAAAAAEO7CUNT_EkObj2XuAor4UaA5CNA'
 
 # Below is the code that can be used if environment variables were used for the email account
 #

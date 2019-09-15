@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from src.data_model import Account
@@ -7,6 +7,7 @@ class Login(FlaskForm):
     username = StringField(validators=[DataRequired(), Length(min=5, max=15)])
     password = PasswordField(validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
+    recaptcha = RecaptchaField()
     log_in = SubmitField('Log In')
 
 class CreateAccount(FlaskForm):
@@ -14,6 +15,7 @@ class CreateAccount(FlaskForm):
     username = StringField(validators=[DataRequired(), Length(min=5, max=15)])
     password = PasswordField(validators=[DataRequired()])
     confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password')])
+    recaptcha = RecaptchaField()
     create = SubmitField('Create Account')
 
     def validate_email(self, email):
@@ -28,9 +30,11 @@ class CreateAccount(FlaskForm):
 
 class PasswordResetReq(FlaskForm):
     email = StringField(validators=[DataRequired(), Email()])
+    recaptcha = RecaptchaField()
     send = SubmitField('Send Password Reset Link')
 
 class PasswordReset(FlaskForm):
     password = PasswordField(validators=[DataRequired()])
     confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password')])
+    recaptcha = RecaptchaField()
     reset = SubmitField('Reset Password')
