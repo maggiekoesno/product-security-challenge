@@ -62,7 +62,9 @@ Multi factor authentication is implemented with onetimepass library. User will n
 If the user wishes to reset their password or have forgotten their password, they can reset the password by clicking on the "Forgot Password" link on the login page. This will redirect them to a form where they can fill in their email address to receive a reset link with a token. Regardless of whether or not the email exists in the database, a flash message will appear for the user to check their email. However, an email will only be sent to said address if a user with that email exists in the database. The user can then reset their password using the link sent to their email that will only be valid for 5 minutes to avoid unwanted use.
 
 # Account lockout
-Google Recaptcha v2 is also implemented on all forms to ensure automated requests won't work. This is also implemented to avoid automated brute force attacks.
+Account lockout is implemented so that if the wrong password and/ OTP has been entered for the same user three times, account shall be locked. Once account is locked, user cannot log in without reactivating the account. An email will right away be sent to the user in this case with a 24 hour valid link to unlock their account. A link to resend the unlock-link is also included in said email just in case the user did not see the email in the first 24 hours. However, a precaution has been put into place to make sure that the unlock link can only be sent if the user's account is locked. Upon unlocking their account, they are given the suggestion to reset their password.
+
+Additionally, Google Recaptcha v2 is also implemented on all forms to ensure automated requests won't work. This is also implemented to avoid automated brute force attacks.
 
 # Known password check
 This is implemented by using the python package 'safe'. As quoted from their website, safe will check the password for the following criterias:

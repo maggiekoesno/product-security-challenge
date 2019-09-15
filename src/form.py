@@ -51,6 +51,11 @@ class CreateAccount(FlaskForm):
         elif p in self.username.data:
             raise ValidationError('Password is too predictable')
 
+class RequestUnlockEmail(FlaskForm):
+    email = StringField(validators=[DataRequired(), Email()])
+    recaptcha = RecaptchaField()
+    send = SubmitField('Resend Email')
+
 class PasswordResetReq(FlaskForm):
     email = StringField(validators=[DataRequired(), Email()])
     recaptcha = RecaptchaField()
@@ -66,16 +71,8 @@ class PasswordReset(FlaskForm):
         p = password.data
         if not(bool(safe.check(p))):
             raise ValidationError('Password is too predictable')
-        elif self.username.data in p:
-            raise ValidationError('Password is too predictable')
-        elif p in self.username.data:
-            raise ValidationError('Password is too predictable')
-    
+        
     def validate_confirm_pwd(self, confirm_pwd):
         p = confirm_pwd.data
         if not(bool(safe.check(p))):
-            raise ValidationError('Password is too predictable')
-        elif self.username.data in p:
-            raise ValidationError('Password is too predictable')
-        elif p in self.username.data:
             raise ValidationError('Password is too predictable')

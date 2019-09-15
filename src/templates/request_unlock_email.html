@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unlock Account</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="login-form">  
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            <h2 class="text-center">Reset Password</h2>
+            <div class="form-group">
+                {% if form.email.errors %}
+                    {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.email(class="form-control", placeholder="Email") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                    {% if form.recaptcha.errors %}
+                    {{ form.recaptcha }}
+                    <div class="invalid-feedback">
+                        {% for error in form.recaptcha.errors %}
+                            <span>You must prove you are not a robot!</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.recaptcha }}
+                {% endif %}
+                </div>
+            <div class="form-group">
+                {{ form.send(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -2,10 +2,34 @@ import pyqrcode as pyqrcode
 from io import BytesIO
 from flask import render_template, url_for, flash, redirect, session
 from src import app, database, encrypt, mail
-from src.form import Login, CreateAccount, PasswordResetReq, PasswordReset
+from src.form import Login, CreateAccount, PasswordResetReq, PasswordReset, RequestUnlockEmail
 from src.data_model import Account
 from flask_login import login_user, current_user, logout_user
 from flask_mail import Message
+
+def send_lock_email(account):
+    if account.locked:
+        token = account.get_token(86400)
+        msg = Message('ACCOUNT LOCK OUT', sender='dummy.zendeskchallenge@gmail.com',
+                    recipients=[account.email])
+        msg.body = f'''You have been locked out of your account due to security issues. Please click this link to unlock your account:
+    {url_for('unlock_account', token=token, _external=True)}
+
+    The link above will expire in 24 hours. If you missed this email, please click the link below to request a new valid link:
+    {url_for('request_unlock_email', _external=True)}
+    '''
+        mail.send(msg)
+
+def count_failed_attempts(account):
+    account.failed_attempts = account.failed_attempts + 1
+    if account.failed_attempts > 2:
+        account.locked = True
+    database.session.commit()
+
+    if account.locked:
+        flash('Too many unsuccessful login attempts! You have been locked out of your account, please check your email to unlock your account.', 'danger')
+        send_lock_email(account)
+        return redirect(url_for('login'))
 
 @app.route("/", methods=['GET', 'POST'])
 def login():
@@ -14,15 +38,42 @@ def login():
     form = Login()
     if form.validate_on_submit():
         account = Account.query.filter_by(username=form.username.data.lower()).first()
+        if account.locked:
+            flash('Your account has been locked! Please check your email to unlock your account', 'warning')
+            return redirect(url_for('login'))
         if account and encrypt.check_password_hash(account.password, form.password.data):
             if not account.verify_totp(form.otp.data):
+                count_failed_attempts(account)
                 flash('Invalid OTP', 'danger')
                 return redirect(url_for('login'))
             login_user(account, remember=form.remember_me.data)
             return redirect(url_for('logged_in'))
         else:
+            count_failed_attempts(account)
             flash('Invalid username or password', 'danger')
     return render_template('index.html', form=form)
+
+@app.route('/unlock-account/<token>', methods = ['GET'])
+def unlock_account(token):
+    account = Account.verify_token(token)
+    if account is None:
+        flash('Your link has expired or is invalid! Check the previous email on how to get a new link', 'danger')
+        return redirect(url_for('login'))
+    account.locked = False
+    account.failed_attempts = 0
+    database.session.commit()
+    return render_template('unlock_account.html')
+
+@app.route('/request-unlock-email', methods = ['GET', 'POST'])
+def request_unlock_email():
+    form = RequestUnlockEmail()
+    if form.validate_on_submit():
+        account = Account.query.filter_by(email=form.email.data.lower()).first()
+        if account:
+            send_lock_email(account)
+        flash('Link has been sent to your email. It will expire in 24 hours.', 'info')
+        return redirect(url_for('login'))
+    return render_template('request_unlock_email.html', form=form)
 
 @app.route('/logged-in', methods = ['GET'])
 def logged_in():
@@ -117,7 +168,7 @@ def reset_request():
 def reset_pwd(token):
     account = Account.verify_token(token)
     if account is None:
-        flash('Your link has expired of is invalid! Enter your email to receive a new valid link', 'danger')
+        flash('Your link has expired or is invalid! Enter your email to receive a new valid link', 'danger')
         return redirect(url_for('reset_request'))
     form = PasswordReset()
     if form.validate_on_submit():
