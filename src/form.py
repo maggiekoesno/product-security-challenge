@@ -1,3 +1,4 @@
+import safe
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
@@ -34,10 +35,8 @@ class CreateAccount(FlaskForm):
 
     def validate_password(self, password):
         p = password.data
-        if p.isnumeric():
-            raise ValidationError('Password can not contain only number')
-        elif p.isalpha():
-            raise ValidationError('Password can not contain only letters')
+        if not(bool(safe.check(p))):
+            raise ValidationError('Password is too predictable')
         elif self.username.data in p:
             raise ValidationError('Password is too predictable')
         elif p in self.username.data:
@@ -45,10 +44,8 @@ class CreateAccount(FlaskForm):
     
     def validate_confirm_pwd(self, confirm_pwd):
         p = confirm_pwd.data
-        if p.isnumeric():
-            raise ValidationError('Password can not contain only number')
-        elif p.isalpha():
-            raise ValidationError('Password can not contain only letters')
+        if not(bool(safe.check(p))):
+            raise ValidationError('Password is too predictable')
         elif self.username.data in p:
             raise ValidationError('Password is too predictable')
         elif p in self.username.data:
@@ -64,3 +61,21 @@ class PasswordReset(FlaskForm):
     confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password')])
     recaptcha = RecaptchaField()
     reset = SubmitField('Reset Password')
+
+    def validate_password(self, password):
+        p = password.data
+        if not(bool(safe.check(p))):
+            raise ValidationError('Password is too predictable')
+        elif self.username.data in p:
+            raise ValidationError('Password is too predictable')
+        elif p in self.username.data:
+            raise ValidationError('Password is too predictable')
+    
+    def validate_confirm_pwd(self, confirm_pwd):
+        p = confirm_pwd.data
+        if not(bool(safe.check(p))):
+            raise ValidationError('Password is too predictable')
+        elif self.username.data in p:
+            raise ValidationError('Password is too predictable')
+        elif p in self.username.data:
+            raise ValidationError('Password is too predictable')

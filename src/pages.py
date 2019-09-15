@@ -55,8 +55,6 @@ def create_account():
         database.session.commit()
         session['username'] = account.username
         return redirect(url_for('totp'))
-        # flash('Account created! Please verify your email before logging in.', 'info')
-        # return redirect(url_for('login'))
     return render_template('create_account.html', form=form)
 
 @app.route('/totp')

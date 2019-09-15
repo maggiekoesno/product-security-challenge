@@ -14,7 +14,7 @@ class Account(database.Model, UserMixin):
     username = database.Column(database.String(15), unique=True, nullable=False)
     email = database.Column(database.String(75), unique=True, nullable=False)
     password = database.Column(database.String(60), nullable=False)
-    active = database.Column(database.Boolean, default=False, nullable=False)
+    active = database.Column(database.Boolean, default=True, nullable=False)
     failed_attempts = database.Column(database.Integer, default = 0)
     otp_secret = database.Column(database.String(16))
 

@@ -22,6 +22,9 @@ pip install flask-wtf
 pip install flask-sqlalchemy
 pip install flask-bcrypt
 pip install flask-mail
+pip install onetimepass
+pip instal; pyqrcode
+pip install safe
 ```
 After you have installed all the necessary packages, clone this repository and make sure you are in the "product_security_challenge/" directory and run the following python file:
 
@@ -62,3 +65,16 @@ If the user wishes to reset their password or have forgotten their password, the
 Google Recaptcha v2 is also implemented on all forms to ensure automated requests won't work. This is also implemented to avoid automated brute force attacks.
 
 # Known password check
+This is implemented by using the python package 'safe'. As quoted from their website, safe will check the password for the following criterias:
+- Safe will check if the password has a simple pattern, for instance:
+    password is in the order on your QWERT keyboards.
+    password is simple alphabet step by step, such as: abcd, 1357
+- Safe will check if the password is a common used password. Many thanks to Mark Burnett for the great work on 10000 Top Passwords.
+- Safe will check if the password has mixed number, alphabet, marks.
+
+To ensure for a better password, password is also checked if it is a substring of the username or contains a substring that is the username.
+
+## Additional note
+This error might be encountered on a macbook: 
+```urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1076)>```
+To solve this please go to Applications > Python3.7 folder > double click on "Install Certificates.command" file.
