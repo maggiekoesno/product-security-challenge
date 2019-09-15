@@ -7,6 +7,7 @@ class Login(FlaskForm):
     username = StringField(validators=[DataRequired()])
     password = PasswordField(validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
+    otp = StringField(validators=[DataRequired(), Length(6, 6)])
     recaptcha = RecaptchaField()
     log_in = SubmitField('Log In')
 

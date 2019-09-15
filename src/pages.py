@@ -1,4 +1,6 @@
-from flask import render_template, url_for, flash, redirect
+import pyqrcode as pyqrcode
+from io import BytesIO
+from flask import render_template, url_for, flash, redirect, session
 from src import app, database, encrypt, mail
 from src.form import Login, CreateAccount, PasswordResetReq, PasswordReset
 from src.data_model import Account
@@ -13,6 +15,9 @@ def login():
     if form.validate_on_submit():
         account = Account.query.filter_by(username=form.username.data.lower()).first()
         if account and encrypt.check_password_hash(account.password, form.password.data):
+            if not account.verify_totp(form.otp.data):
+                flash('Invalid OTP', 'danger')
+                return redirect(url_for('login'))
             login_user(account, remember=form.remember_me.data)
             return redirect(url_for('logged_in'))
         else:
@@ -45,11 +50,43 @@ def create_account():
     if form.validate_on_submit():
         hashed_pwd = encrypt.generate_password_hash(form.password.data).decode('utf-8')
         account = Account(username=form.username.data.lower(), email=form.email.data.lower(), password=hashed_pwd)
+        account.set_otp_secret()
         database.session.add(account)
         database.session.commit()
-        flash('Account created! Please verify your email before logging in.', 'info')
-        return redirect(url_for('login'))
+        session['username'] = account.username
+        return redirect(url_for('totp'))
+        # flash('Account created! Please verify your email before logging in.', 'info')
+        # return redirect(url_for('login'))
     return render_template('create_account.html', form=form)
+
+@app.route('/totp')
+def totp():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    account = Account.query.filter_by(username=session['username']).first()
+    if account is None:
+        return redirect(url_for('login'))
+    return render_template('totp.html'), 200, {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'}
+
+@app.route('/qrcode')
+def qrcode():
+    if 'username' not in session:
+        abort(404)
+    account = Account.query.filter_by(username=session['username']).first()
+    if account is None:
+        abort(404)
+    del session['username']
+    url = pyqrcode.create(account.get_totp_uri())
+    stream = BytesIO()
+    url.svg(stream, scale=5)
+    return stream.getvalue(), 200, {
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'}
 
 def send_reset_email(account):
     token = account.get_token(300)

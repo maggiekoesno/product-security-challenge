@@ -1,9 +1,11 @@
+asn1crypto==0.24.0
 bcrypt==3.1.7
 blinker==1.4
 certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
 Click==7.0
+cryptography==2.7
 docker==4.0.2
 Flask==1.1.1
 Flask-Bcrypt==0.7.1
@@ -17,7 +19,9 @@ iso8601==0.1.12
 itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
+onetimepass==1.0.1
 pycparser==2.19
+pyOpenSSL==19.0.0
 PyYAML==5.1.2
 requests==2.22.0
 serial==0.0.97
