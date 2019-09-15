@@ -12,9 +12,7 @@ In this repository, there are the following files:
 
 ## Running the Project
 This project was written on Python v3.7.4
----
-Make sure to use the pip3 or pip and python3 or python correctly according to your machine.
----
+Don't forget to use the pip3 or pip and python3 or python correctly according to your machine.
 Make sure you have the correct version of Python and install the following packages:
 ```bash
 pip install flask
