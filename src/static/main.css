@@ -29,3 +29,7 @@
     color: red;
     font-size: 10px;   
 }
+
+.is-invalid{
+    box-shadow: 2px 2px 2px rgba(240, 83, 83, 0.3);
+}
