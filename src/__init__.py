@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -6,7 +7,7 @@ from flask_mail import Mail
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '76d8f44b0b6943dd5a62'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or '76d8f44b0b6943dd5a62'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///zendesk.db'
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
