@@ -30,11 +30,6 @@ class PasswordResetReq(FlaskForm):
     email = StringField(validators=[DataRequired(), Email()])
     send = SubmitField('Send Password Reset Link')
 
-    def validate_email(self, email):
-        account = Account.query.filter_by(email=email.data).first()
-        if account is None:
-            raise ValidationError('There is no account with that email. You must register first.')
-
 class PasswordReset(FlaskForm):
     password = PasswordField(validators=[DataRequired()])
     confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password')])
