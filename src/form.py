@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from src.data_model import Account
 
 class Login(FlaskForm):
-    username = StringField(validators=[DataRequired(), Length(min=5, max=15)])
+    username = StringField(validators=[DataRequired()])
     password = PasswordField(validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     recaptcha = RecaptchaField()
@@ -13,8 +13,8 @@ class Login(FlaskForm):
 class CreateAccount(FlaskForm):
     email = StringField(validators=[DataRequired(), Email()])
     username = StringField(validators=[DataRequired(), Length(min=5, max=15)])
-    password = PasswordField(validators=[DataRequired()])
-    confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField(validators=[DataRequired(), Length(min=8, max=20)])
+    confirm_pwd = PasswordField(validators=[DataRequired(), EqualTo('password'), Length(min=8, max=20)])
     recaptcha = RecaptchaField()
     create = SubmitField('Create Account')
 
@@ -24,9 +24,34 @@ class CreateAccount(FlaskForm):
             raise ValidationError('This email already has an account. Please login or use a different email!')
 
     def validate_username(self, username):
-        account = Account.query.filter_by(username=username.data).first()
+        u = username.data
+        account = Account.query.filter_by(username=u).first()
         if account:
             raise ValidationError('Oh no! Username has been taken. Please choose another username!')
+        elif not(u.isalnum()):
+            raise ValidationError('Username can only contain letters and/ numbers')
+
+    def validate_password(self, password):
+        p = password.data
+        if p.isnumeric():
+            raise ValidationError('Password can not contain only number')
+        elif p.isalpha():
+            raise ValidationError('Password can not contain only letters')
+        elif self.username.data in p:
+            raise ValidationError('Password is too predictable')
+        elif p in self.username.data:
+            raise ValidationError('Password is too predictable')
+    
+    def validate_confirm_pwd(self, confirm_pwd):
+        p = confirm_pwd.data
+        if p.isnumeric():
+            raise ValidationError('Password can not contain only number')
+        elif p.isalpha():
+            raise ValidationError('Password can not contain only letters')
+        elif self.username.data in p:
+            raise ValidationError('Password is too predictable')
+        elif p in self.username.data:
+            raise ValidationError('Password is too predictable')
 
 class PasswordResetReq(FlaskForm):
     email = StringField(validators=[DataRequired(), Email()])

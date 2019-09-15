@@ -11,7 +11,7 @@ def login():
        return redirect(url_for('logged_in'))
     form = Login()
     if form.validate_on_submit():
-        account = Account.query.filter_by(username=form.username.data).first()
+        account = Account.query.filter_by(username=form.username.data.lower()).first()
         if account and encrypt.check_password_hash(account.password, form.password.data):
             login_user(account, remember=form.remember_me.data)
             return redirect(url_for('logged_in'))
@@ -44,7 +44,7 @@ def create_account():
     form = CreateAccount()
     if form.validate_on_submit():
         hashed_pwd = encrypt.generate_password_hash(form.password.data).decode('utf-8')
-        account = Account(username=form.username.data, email=form.email.data, password=hashed_pwd)
+        account = Account(username=form.username.data.lower(), email=form.email.data.lower(), password=hashed_pwd)
         database.session.add(account)
         database.session.commit()
         flash('Account created! Please verify your email before logging in.', 'info')
@@ -70,7 +70,7 @@ def reset_request():
         return redirect(url_for('logged_in'))
     form = PasswordResetReq()
     if form.validate_on_submit():
-        account = Account.query.filter_by(email=form.email.data).first()
+        account = Account.query.filter_by(email=form.email.data.lower()).first()
         if account:
             send_reset_email(account)
         flash('Please reset your password through the link sent to your email address immediately! Link will expire in 5 mintues', 'info')

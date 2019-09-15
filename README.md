@@ -34,11 +34,17 @@ Google chrome is recommended.
 ## Features Implemented
 
 # Input sanitization and validation
+- Flask provides XSS prevention by using Jinja2 and configuring it so that it has the ability to escape all values unless explicitly set to do otherwise.
+- SQLAlchemy is designed in such a way to avoid SQL Injection. It quotes special characters such as semicolons or apostrophes
+which means that unless we attempt to bypass their quoting mechanisms, we should be safe from SQL Injection attempts. We can mitigate SQL Injection attacks while using SQLAlchemy by avoiding the use of raw SQL and making use of their framework to interact with our database. 
+- Flask's WTForms provides us with validators that takes in the input and verifies it for us based on the criteria we require. By making use of these validators we ensure that the data we are getting is what we expect from the users. 
+For example, we use the built-in validator ```wtforms.validators.Email``` to verify if the given string is a valid email address. We also use custom validators to verify the data based on our own requirements. 
+
 # Password hashed
 Password is hashed before being stored into the database using the bcrypt module. Bcrypt provides a great hashing algorithm as it always hashes every password with a salt do make cracking a user's password significantly harder and eliminating the possibility of using a hashing table to figure out a user's password.
 
 # Prevention of timing attacks
-Google Recaptcha v2 is implemented on all forms to ensure automated requests will work. This is also implemented to avoid automated brute force attacks.
+
 
 # Logging
 # CSRF prevention
@@ -50,7 +56,9 @@ If the user wishes to reset their password or have forgotten their password, the
 
 # Account lockout
 
+Google Recaptcha v2 is also implemented on all forms to ensure automated requests won't work. This is also implemented to avoid automated brute force attacks.
+
 # Cookie
 # HTTPS
-
+  
 # Known password check
