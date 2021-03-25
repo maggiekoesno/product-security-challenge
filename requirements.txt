@@ -23,7 +23,7 @@ onetimepass==1.0.1
 pycparser==2.19
 pyOpenSSL==19.0.0
 PyQRCode==1.2.1
-PyYAML==5.1.2
+PyYAML==5.4
 requests==2.22.0
 Safe==0.4
 serial==0.0.97
